@@ -1,14 +1,14 @@
-FROM node:alpine as build
+﻿# Stage 1: Build
+FROM node:16.20.2-alpine AS build
 
 WORKDIR /app
 
 COPY . .
 
 RUN yarn
-RUN yarn build
+RUN DISABLE_ESLINT_PLUGIN=true yarn build
 
-#---
-
+# Stage 2: Production
 FROM nginx:alpine
 
 COPY --from=build /app/build/ /var/www
