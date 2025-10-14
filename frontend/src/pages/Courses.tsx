@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import CoursesTable from '../components/courses/CoursesTable';
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
 import useAuth from '../hooks/useAuth';
+import useDebounce from '../hooks/useDebounce';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import courseService from '../services/CourseService';
 
@@ -18,16 +19,19 @@ export default function Courses() {
   const [error, setError] = useState<string>();
 
   const { authenticatedUser } = useAuth();
+  const queryClient = useQueryClient();
+
+  // debounce filter values to avoid excessive api calls
+  const debouncedName = useDebounce(name, 500);
+  const debouncedDescription = useDebounce(description, 500);
+
   const { data, isLoading } = useQuery(
-    ['courses', name, description],
+    ['courses', debouncedName, debouncedDescription],
     () =>
       courseService.findAll({
-        name: name || undefined,
-        description: description || undefined,
+        name: debouncedName || undefined,
+        description: debouncedDescription || undefined,
       }),
-    {
-      refetchInterval: 1000,
-    },
   );
 
   const {
@@ -37,12 +41,21 @@ export default function Courses() {
     reset,
   } = useForm<CreateCourseRequest>();
 
+  const handleRefresh = () => {
+    queryClient.invalidateQueries([
+      'courses',
+      debouncedName,
+      debouncedDescription,
+    ]);
+  };
+
   const saveCourse = async (createCourseRequest: CreateCourseRequest) => {
     try {
       await courseService.save(createCourseRequest);
       setAddCourseShow(false);
       reset();
       setError(null);
+      handleRefresh();
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -52,14 +65,22 @@ export default function Courses() {
     <Layout>
       <h1 className="font-semibold text-3xl mb-5">Manage Courses</h1>
       <hr />
-      {authenticatedUser.role !== 'user' ? (
+      <div className="flex gap-3 my-5">
+        {authenticatedUser.role !== 'user' ? (
+          <button
+            className="btn flex gap-2 w-full sm:w-auto justify-center"
+            onClick={() => setAddCourseShow(true)}
+          >
+            <Plus /> Add Course
+          </button>
+        ) : null}
         <button
-          className="btn my-5 flex gap-2 w-full sm:w-auto justify-center"
-          onClick={() => setAddCourseShow(true)}
+          className="btn flex gap-2 w-full sm:w-auto justify-center"
+          onClick={handleRefresh}
         >
-          <Plus /> Add Course
+          <RefreshCw /> Refresh
         </button>
-      ) : null}
+      </div>
 
       <div className="table-filter">
         <div className="flex flex-row gap-5">

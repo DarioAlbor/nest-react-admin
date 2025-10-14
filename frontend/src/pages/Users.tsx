@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
 import UsersTable from '../components/users/UsersTable';
 import useAuth from '../hooks/useAuth';
+import useDebounce from '../hooks/useDebounce';
 import CreateUserRequest from '../models/user/CreateUserRequest';
 import userService from '../services/UserService';
 
 export default function Users() {
   const { authenticatedUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -21,20 +23,22 @@ export default function Users() {
   const [addUserShow, setAddUserShow] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
+  // debounce filter values to avoid excessive api calls
+  const debouncedFirstName = useDebounce(firstName, 500);
+  const debouncedLastName = useDebounce(lastName, 500);
+  const debouncedUsername = useDebounce(username, 500);
+
   const { data, isLoading } = useQuery(
-    ['users', firstName, lastName, username, role],
+    ['users', debouncedFirstName, debouncedLastName, debouncedUsername, role],
     async () => {
       return (
         await userService.findAll({
-          firstName: firstName || undefined,
-          lastName: lastName || undefined,
-          username: username || undefined,
+          firstName: debouncedFirstName || undefined,
+          lastName: debouncedLastName || undefined,
+          username: debouncedUsername || undefined,
           role: role || undefined,
         })
       ).filter((user) => user.id !== authenticatedUser.id);
-    },
-    {
-      refetchInterval: 1000,
     },
   );
 
@@ -45,12 +49,23 @@ export default function Users() {
     reset,
   } = useForm<CreateUserRequest>();
 
+  const handleRefresh = () => {
+    queryClient.invalidateQueries([
+      'users',
+      debouncedFirstName,
+      debouncedLastName,
+      debouncedUsername,
+      role,
+    ]);
+  };
+
   const saveUser = async (createUserRequest: CreateUserRequest) => {
     try {
       await userService.save(createUserRequest);
       setAddUserShow(false);
       setError(null);
       reset();
+      handleRefresh();
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -60,12 +75,20 @@ export default function Users() {
     <Layout>
       <h1 className="font-semibold text-3xl mb-5">Manage Users</h1>
       <hr />
-      <button
-        className="btn my-5 flex gap-2 w-full sm:w-auto justify-center"
-        onClick={() => setAddUserShow(true)}
-      >
-        <Plus /> Add User
-      </button>
+      <div className="flex gap-3 my-5">
+        <button
+          className="btn flex gap-2 w-full sm:w-auto justify-center"
+          onClick={() => setAddUserShow(true)}
+        >
+          <Plus /> Add User
+        </button>
+        <button
+          className="btn flex gap-2 w-full sm:w-auto justify-center"
+          onClick={handleRefresh}
+        >
+          <RefreshCw /> Refresh
+        </button>
+      </div>
 
       <div className="table-filter mt-2">
         <div className="flex flex-row gap-5">

@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Loader, Plus, X } from 'react-feather';
+import { Loader, Plus, RefreshCw, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { useParams } from 'react-router';
 
 import ContentsTable from '../components/content/ContentsTable';
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
 import useAuth from '../hooks/useAuth';
+import useDebounce from '../hooks/useDebounce';
 import CreateContentRequest from '../models/content/CreateContentRequest';
 import contentService from '../services/ContentService';
 import courseService from '../services/CourseService';
@@ -15,6 +16,7 @@ import courseService from '../services/CourseService';
 export default function Course() {
   const { id } = useParams<{ id: string }>();
   const { authenticatedUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -30,17 +32,26 @@ export default function Course() {
     reset,
   } = useForm<CreateContentRequest>();
 
+  // debounce filter values to avoid excessive api calls
+  const debouncedName = useDebounce(name, 500);
+  const debouncedDescription = useDebounce(description, 500);
+
   const { data, isLoading } = useQuery(
-    [`contents-${id}`, name, description],
+    [`contents-${id}`, debouncedName, debouncedDescription],
     async () =>
       contentService.findAll(id, {
-        name: name || undefined,
-        description: description || undefined,
+        name: debouncedName || undefined,
+        description: debouncedDescription || undefined,
       }),
-    {
-      refetchInterval: 1000,
-    },
   );
+
+  const handleRefresh = () => {
+    queryClient.invalidateQueries([
+      `contents-${id}`,
+      debouncedName,
+      debouncedDescription,
+    ]);
+  };
 
   const saveCourse = async (createContentRequest: CreateContentRequest) => {
     try {
@@ -48,6 +59,7 @@ export default function Course() {
       setAddContentShow(false);
       reset();
       setError(null);
+      handleRefresh();
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -59,14 +71,22 @@ export default function Course() {
         {!userQuery.isLoading ? `${userQuery.data.name} Contents` : ''}
       </h1>
       <hr />
-      {authenticatedUser.role !== 'user' ? (
+      <div className="flex gap-3 my-5">
+        {authenticatedUser.role !== 'user' ? (
+          <button
+            className="btn flex gap-2 w-full sm:w-auto justify-center"
+            onClick={() => setAddContentShow(true)}
+          >
+            <Plus /> Add Content
+          </button>
+        ) : null}
         <button
-          className="btn my-5 flex gap-2 w-full sm:w-auto justify-center"
-          onClick={() => setAddContentShow(true)}
+          className="btn flex gap-2 w-full sm:w-auto justify-center"
+          onClick={handleRefresh}
         >
-          <Plus /> Add Content
+          <RefreshCw /> Refresh
         </button>
-      ) : null}
+      </div>
 
       <div className="table-filter">
         <div className="flex flex-row gap-5">
