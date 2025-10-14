@@ -22,39 +22,42 @@ export default function Sidebar({ className }: SidebarProps) {
   };
 
   return (
-    <div className={'sidebar ' + className}>
-      <div className="flex flex-col items-center mb-6">
-        <div className="w-40 h-20 mb-3 flex items-center justify-center">
-          <img
-            src="/assets/urbano-logo.png"
-            alt="Urbano"
-            className="w-full h-full object-contain"
-          />
-        </div>
+    <div
+      className={'sidebar ' + className}
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(/assets/sidemenu-bg.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div className="flex flex-col items-center mb-8">
         <Link to="/" className="no-underline">
-          <h2 className="font-semibold text-center text-gray-700">
-            CRM System
-          </h2>
+          <img
+            src="/assets/urbano-logo-white.png"
+            alt="Urbano"
+            className="w-40 h-auto object-contain"
+          />
         </Link>
       </div>
       <nav className="mt-5 flex flex-col gap-3 flex-grow">
         <SidebarItem to="/">
-          <Home /> Dashboard
+          <Home className="text-white" /> Dashboard
         </SidebarItem>
         <SidebarItem to="/courses">
-          <BookOpen /> Courses
+          <BookOpen className="text-white" /> Courses
         </SidebarItem>
         {authenticatedUser.role === 'admin' ? (
           <SidebarItem to="/users">
-            <Users /> Users
+            <Users className="text-white" /> Users
           </SidebarItem>
         ) : null}
       </nav>
       <button
-        className="text-urbano-primary hover:bg-urbano-white-hover rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none border border-urbano-primary"
+        className="bg-urbano-primary text-white hover:bg-opacity-90 rounded-lg p-3 transition-all flex gap-3 justify-center items-center font-semibold focus:outline-none shadow-md"
         onClick={handleLogout}
       >
-        <LogOut /> Logout
+        <LogOut className="text-white" /> Logout
       </button>
     </div>
   );
