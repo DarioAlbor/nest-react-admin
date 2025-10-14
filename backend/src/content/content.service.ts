@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ILike } from 'typeorm';
 
+import { PaginatedResult } from '../common/dto/pagination.dto';
 import { CourseService } from '../course/course.service';
 import { CreateContentDto, UpdateContentDto } from './content.dto';
 import { Content } from './content.entity';
@@ -24,18 +25,53 @@ export class ContentService {
     }).save();
   }
 
-  async findAll(contentQuery: ContentQuery): Promise<Content[]> {
-    Object.keys(contentQuery).forEach((key) => {
-      contentQuery[key] = ILike(`%${contentQuery[key]}%`);
+  async findAll(contentQuery: ContentQuery): Promise<PaginatedResult<Content>> {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'name',
+      sortOrder = 'ASC',
+      ...filters
+    } = contentQuery;
+
+    // build where conditions
+    const whereConditions: any = {};
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] && filters[key].trim() !== '') {
+        whereConditions[key] = ILike(`%${filters[key]}%`);
+      }
     });
 
-    return await Content.find({
-      where: contentQuery,
-      order: {
-        name: 'ASC',
-        description: 'ASC',
-      },
+    // build order
+    const order: any = {};
+    if (sortBy && ['name', 'description', 'dateCreated'].includes(sortBy)) {
+      order[sortBy] = sortOrder;
+    } else {
+      order.name = 'ASC';
+    }
+
+    // calculate pagination
+    const skip = (page - 1) * limit;
+
+    // execute queries
+    const [data, total] = await Content.findAndCount({
+      where: whereConditions,
+      order,
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    };
   }
 
   async findById(id: string): Promise<Content> {
@@ -65,17 +101,53 @@ export class ContentService {
   async findAllByCourseId(
     courseId: string,
     contentQuery: ContentQuery,
-  ): Promise<Content[]> {
-    Object.keys(contentQuery).forEach((key) => {
-      contentQuery[key] = ILike(`%${contentQuery[key]}%`);
+  ): Promise<PaginatedResult<Content>> {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'name',
+      sortOrder = 'ASC',
+      ...filters
+    } = contentQuery;
+
+    // build where conditions
+    const whereConditions: any = { courseId };
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] && filters[key].trim() !== '') {
+        whereConditions[key] = ILike(`%${filters[key]}%`);
+      }
     });
-    return await Content.find({
-      where: { courseId, ...contentQuery },
-      order: {
-        name: 'ASC',
-        description: 'ASC',
-      },
+
+    // build order
+    const order: any = {};
+    if (sortBy && ['name', 'description', 'dateCreated'].includes(sortBy)) {
+      order[sortBy] = sortOrder;
+    } else {
+      order.name = 'ASC';
+    }
+
+    // calculate pagination
+    const skip = (page - 1) * limit;
+
+    // execute queries
+    const [data, total] = await Content.findAndCount({
+      where: whereConditions,
+      order,
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    };
   }
 
   async update(

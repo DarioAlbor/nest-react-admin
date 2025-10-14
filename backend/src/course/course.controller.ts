@@ -17,6 +17,7 @@ import { CreateContentDto, UpdateContentDto } from '../content/content.dto';
 import { Content } from '../content/content.entity';
 import { ContentQuery } from '../content/content.query';
 import { ContentService } from '../content/content.service';
+import { PaginatedResult } from '../common/dto/pagination.dto';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
@@ -41,7 +42,7 @@ export class CourseController {
   }
 
   @Get()
-  async findAll(@Query() courseQuery: CourseQuery): Promise<Course[]> {
+  async findAll(@Query() courseQuery: CourseQuery): Promise<PaginatedResult<Course>> {
     return await this.courseService.findAll(courseQuery);
   }
 
@@ -78,7 +79,7 @@ export class CourseController {
   async findAllContentsByCourseId(
     @Param('id') id: string,
     @Query() contentQuery: ContentQuery,
-  ): Promise<Content[]> {
+  ): Promise<PaginatedResult<Content>> {
     return await this.contentService.findAllByCourseId(id, contentQuery);
   }
 

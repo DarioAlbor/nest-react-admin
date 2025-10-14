@@ -2,6 +2,7 @@ import CreateUserRequest from '../models/user/CreateUserRequest';
 import UpdateUserRequest from '../models/user/UpdateUserRequest';
 import User from '../models/user/User';
 import UserQuery from '../models/user/UserQuery';
+import { PaginatedResult } from '../types/pagination';
 import apiService from './ApiService';
 
 class UserService {
@@ -9,9 +10,9 @@ class UserService {
     await apiService.post('/api/users', createUserRequest);
   }
 
-  async findAll(userQuery: UserQuery): Promise<User[]> {
+  async findAll(userQuery: UserQuery): Promise<PaginatedResult<User>> {
     return (
-      await apiService.get<User[]>('/api/users', {
+      await apiService.get<PaginatedResult<User>>('/api/users', {
         params: userQuery,
       })
     ).data;

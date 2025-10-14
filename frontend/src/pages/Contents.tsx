@@ -7,6 +7,9 @@ import { useParams } from 'react-router';
 import ContentsTable from '../components/content/ContentsTable';
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
+import PageSizeControls from '../components/shared/PageSizeControls';
+import Pagination from '../components/shared/Pagination';
+import SortControls from '../components/shared/SortControls';
 import useAuth from '../hooks/useAuth';
 import useDebounce from '../hooks/useDebounce';
 import CreateContentRequest from '../models/content/CreateContentRequest';
@@ -20,6 +23,10 @@ export default function Course() {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('ASC');
   const [addContentShow, setAddContentShow] = useState<boolean>(false);
   const [error, setError] = useState<string>();
 
@@ -37,11 +44,23 @@ export default function Course() {
   const debouncedDescription = useDebounce(description, 500);
 
   const { data, isLoading } = useQuery(
-    [`contents-${id}`, debouncedName, debouncedDescription],
+    [
+      `contents-${id}`,
+      debouncedName,
+      debouncedDescription,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    ],
     async () =>
       contentService.findAll(id, {
         name: debouncedName || undefined,
         description: debouncedDescription || undefined,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
       }),
   );
 
@@ -50,7 +69,29 @@ export default function Course() {
       `contents-${id}`,
       debouncedName,
       debouncedDescription,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
     ]);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+  };
+
+  const handleSortChange = (
+    newSortBy: string,
+    newSortOrder: 'ASC' | 'DESC',
+  ) => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setPage(1);
   };
 
   const saveCourse = async (createContentRequest: CreateContentRequest) => {
@@ -107,7 +148,39 @@ export default function Course() {
         </div>
       </div>
 
-      <ContentsTable data={data} isLoading={isLoading} courseId={id} />
+      <div className="flex flex-col lg:flex-row gap-4 mt-4 items-start lg:items-center justify-between">
+        <SortControls
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+          options={[
+            { value: 'name', label: 'Nombre' },
+            { value: 'description', label: 'Descripción' },
+            { value: 'dateCreated', label: 'Fecha de Creación' },
+          ]}
+        />
+        <PageSizeControls
+          pageSize={limit}
+          onPageSizeChange={handlePageSizeChange}
+          total={data?.total || 0}
+        />
+      </div>
+
+      <ContentsTable
+        data={data?.data || []}
+        isLoading={isLoading}
+        courseId={id}
+      />
+
+      {data && (
+        <Pagination
+          currentPage={data.page}
+          totalPages={data.totalPages}
+          onPageChange={handlePageChange}
+          hasNext={data.hasNext}
+          hasPrev={data.hasPrev}
+        />
+      )}
 
       {/* Add User Modal */}
       <Modal show={addContentShow}>

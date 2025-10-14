@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ILike } from 'typeorm';
 
+import { PaginatedResult } from '../common/dto/pagination.dto';
 import { CreateCourseDto, UpdateCourseDto } from './course.dto';
 import { Course } from './course.entity';
 import { CourseQuery } from './course.query';
@@ -14,17 +15,53 @@ export class CourseService {
     }).save();
   }
 
-  async findAll(courseQuery: CourseQuery): Promise<Course[]> {
-    Object.keys(courseQuery).forEach((key) => {
-      courseQuery[key] = ILike(`%${courseQuery[key]}%`);
+  async findAll(courseQuery: CourseQuery): Promise<PaginatedResult<Course>> {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'name',
+      sortOrder = 'ASC',
+      ...filters
+    } = courseQuery;
+
+    // build where conditions
+    const whereConditions: any = {};
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] && filters[key].trim() !== '') {
+        whereConditions[key] = ILike(`%${filters[key]}%`);
+      }
     });
-    return await Course.find({
-      where: courseQuery,
-      order: {
-        name: 'ASC',
-        description: 'ASC',
-      },
+
+    // build order
+    const order: any = {};
+    if (sortBy && ['name', 'description', 'dateCreated'].includes(sortBy)) {
+      order[sortBy] = sortOrder;
+    } else {
+      order.name = 'ASC';
+    }
+
+    // calculate pagination
+    const skip = (page - 1) * limit;
+
+    // execute queries
+    const [data, total] = await Course.findAndCount({
+      where: whereConditions,
+      order,
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    };
   }
 
   async findById(id: string): Promise<Course> {

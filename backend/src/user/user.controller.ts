@@ -18,6 +18,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserGuard } from '../auth/guards/user.guard';
+import { PaginatedResult } from '../common/dto/pagination.dto';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
@@ -42,7 +43,7 @@ export class UserController {
 
   @Get()
   @Roles(Role.Admin)
-  async findAll(@Query() userQuery: UserQuery): Promise<User[]> {
+  async findAll(@Query() userQuery: UserQuery): Promise<PaginatedResult<User>> {
     return await this.userService.findAll(userQuery);
   }
 

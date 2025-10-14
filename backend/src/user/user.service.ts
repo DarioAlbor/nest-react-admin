@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { ILike } from 'typeorm';
 
+import { PaginatedResult } from '../common/dto/pagination.dto';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { UserQuery } from './user.query';
@@ -23,20 +24,57 @@ export class UserService {
     return User.create(createUserDto).save();
   }
 
-  async findAll(userQuery: UserQuery): Promise<User[]> {
-    Object.keys(userQuery).forEach((key) => {
-      if (key !== 'role') {
-        userQuery[key] = ILike(`%${userQuery[key]}%`);
+  async findAll(userQuery: UserQuery): Promise<PaginatedResult<User>> {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'firstName',
+      sortOrder = 'ASC',
+      ...filters
+    } = userQuery;
+
+    // build where conditions
+    const whereConditions: any = {};
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] && filters[key].trim() !== '') {
+        if (key !== 'role') {
+          whereConditions[key] = ILike(`%${filters[key]}%`);
+        } else {
+          whereConditions[key] = filters[key];
+        }
       }
     });
 
-    return User.find({
-      where: userQuery,
-      order: {
-        firstName: 'ASC',
-        lastName: 'ASC',
-      },
+    // build order
+    const order: any = {};
+    if (sortBy && ['firstName', 'lastName', 'username', 'role', 'dateCreated'].includes(sortBy)) {
+      order[sortBy] = sortOrder;
+    } else {
+      order.firstName = 'ASC';
+    }
+
+    // calculate pagination
+    const skip = (page - 1) * limit;
+
+    // execute queries
+    const [data, total] = await User.findAndCount({
+      where: whereConditions,
+      order,
+      skip,
+      take: limit,
     });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+    };
   }
 
   async findById(id: string): Promise<User> {

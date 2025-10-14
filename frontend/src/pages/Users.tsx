@@ -5,6 +5,9 @@ import { useQuery, useQueryClient } from 'react-query';
 
 import Layout from '../components/layout';
 import Modal from '../components/shared/Modal';
+import PageSizeControls from '../components/shared/PageSizeControls';
+import Pagination from '../components/shared/Pagination';
+import SortControls from '../components/shared/SortControls';
 import UsersTable from '../components/users/UsersTable';
 import useAuth from '../hooks/useAuth';
 import useDebounce from '../hooks/useDebounce';
@@ -19,6 +22,10 @@ export default function Users() {
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [sortBy, setSortBy] = useState('firstName');
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC'>('ASC');
 
   const [addUserShow, setAddUserShow] = useState<boolean>(false);
   const [error, setError] = useState<string>();
@@ -29,16 +36,34 @@ export default function Users() {
   const debouncedUsername = useDebounce(username, 500);
 
   const { data, isLoading } = useQuery(
-    ['users', debouncedFirstName, debouncedLastName, debouncedUsername, role],
+    [
+      'users',
+      debouncedFirstName,
+      debouncedLastName,
+      debouncedUsername,
+      role,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    ],
     async () => {
-      return (
-        await userService.findAll({
-          firstName: debouncedFirstName || undefined,
-          lastName: debouncedLastName || undefined,
-          username: debouncedUsername || undefined,
-          role: role || undefined,
-        })
-      ).filter((user) => user.id !== authenticatedUser.id);
+      const result = await userService.findAll({
+        firstName: debouncedFirstName || undefined,
+        lastName: debouncedLastName || undefined,
+        username: debouncedUsername || undefined,
+        role: role || undefined,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      });
+
+      // filter out current user from results
+      return {
+        ...result,
+        data: result.data.filter((user) => user.id !== authenticatedUser.id),
+      };
     },
   );
 
@@ -56,7 +81,29 @@ export default function Users() {
       debouncedLastName,
       debouncedUsername,
       role,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
     ]);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1); // reset to first page when changing page size
+  };
+
+  const handleSortChange = (
+    newSortBy: string,
+    newSortOrder: 'ASC' | 'DESC',
+  ) => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setPage(1); // reset to first page when changing sort
   };
 
   const saveUser = async (createUserRequest: CreateUserRequest) => {
@@ -130,7 +177,37 @@ export default function Users() {
         </div>
       </div>
 
-      <UsersTable data={data} isLoading={isLoading} />
+      <div className="flex flex-col lg:flex-row gap-4 mt-4 items-start lg:items-center justify-between">
+        <SortControls
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+          options={[
+            { value: 'firstName', label: 'Nombre' },
+            { value: 'lastName', label: 'Apellido' },
+            { value: 'username', label: 'Usuario' },
+            { value: 'role', label: 'Rol' },
+            { value: 'dateCreated', label: 'Fecha de Creación' },
+          ]}
+        />
+        <PageSizeControls
+          pageSize={limit}
+          onPageSizeChange={handlePageSizeChange}
+          total={data?.total || 0}
+        />
+      </div>
+
+      <UsersTable data={data?.data || []} isLoading={isLoading} />
+
+      {data && (
+        <Pagination
+          currentPage={data.page}
+          totalPages={data.totalPages}
+          onPageChange={handlePageChange}
+          hasNext={data.hasNext}
+          hasPrev={data.hasPrev}
+        />
+      )}
 
       {/* Add User Modal */}
       <Modal show={addUserShow}>
