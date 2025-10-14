@@ -4,17 +4,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'urbano': {
-          'primary': '#c1292e',
-          'background': '#ffffff',
-          'active': '#c1292e',
-          'header': '#e2e1e1',
-          'white': '#ffffff',
+        urbano: {
+          primary: '#c1292e',
+          background: '#ffffff',
+          active: '#c1292e',
+          header: '#e2e1e1',
+          white: '#ffffff',
           'white-hover': '#f2f2f2',
         },
       },
       fontFamily: {
-        'sans': ['Roboto', 'Helvetica Neue', 'Helvetica', 'Nunito Sans', 'sans-serif'],
+        sans: [
+          'Roboto',
+          'Helvetica Neue',
+          'Helvetica',
+          'Nunito Sans',
+          'sans-serif',
+        ],
       },
     },
   },

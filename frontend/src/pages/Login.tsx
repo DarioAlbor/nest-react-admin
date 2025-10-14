@@ -36,7 +36,9 @@ export default function Login() {
           <h1 className="text-urbano-primary font-bold text-3xl">URBANO</h1>
           <p className="text-gray-600 text-sm">CRM System</p>
         </div>
-        <h2 className="mb-3 text-center font-semibold text-2xl text-gray-700">Iniciar Sesión</h2>
+        <h2 className="mb-3 text-center font-semibold text-2xl text-gray-700">
+          Iniciar Sesión
+        </h2>
         <hr className="border-urbano-header" />
         <form
           className="flex flex-col gap-5 mt-8 w-64"

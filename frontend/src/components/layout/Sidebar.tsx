@@ -25,10 +25,16 @@ export default function Sidebar({ className }: SidebarProps) {
     <div className={'sidebar ' + className}>
       <div className="flex flex-col items-center mb-6">
         <div className="w-40 h-20 mb-3 flex items-center justify-center">
-          <img src="/assets/urbano-logo.png" alt="Urbano" className="w-full h-full object-contain" />
+          <img
+            src="/assets/urbano-logo.png"
+            alt="Urbano"
+            className="w-full h-full object-contain"
+          />
         </div>
         <Link to="/" className="no-underline">
-          <h2 className="font-semibold text-center text-gray-700">CRM System</h2>
+          <h2 className="font-semibold text-center text-gray-700">
+            CRM System
+          </h2>
         </Link>
       </div>
       <nav className="mt-5 flex flex-col gap-3 flex-grow">
