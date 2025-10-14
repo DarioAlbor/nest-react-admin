@@ -1,41 +1,34 @@
-import { useQuery } from 'react-query';
-
-import UpdateProfile from '../components/dashboard/UpdateProfile';
+import AdminDashboard from '../components/dashboard/AdminDashboard';
+import EditorDashboard from '../components/dashboard/EditorDashboard';
+import RecentCourses from '../components/dashboard/RecentCourses';
+import UserDashboard from '../components/dashboard/UserDashboard';
 import Layout from '../components/layout';
-import statsService from '../services/StatsService';
+import useAuth from '../hooks/useAuth';
 
 export default function Dashboard() {
-  const { data, isLoading } = useQuery('stats', statsService.getStats);
+  const { authenticatedUser } = useAuth();
+
+  const renderDashboardContent = () => {
+    switch (authenticatedUser.role) {
+      case 'admin':
+        return <AdminDashboard />;
+      case 'editor':
+        return <EditorDashboard />;
+      default:
+        return <UserDashboard />;
+    }
+  };
 
   return (
     <Layout>
       <h1 className="font-semibold text-3xl mb-5">Dashboard</h1>
       <hr />
-      <div className="mt-5 flex flex-col gap-5">
-        {!isLoading ? (
-          <div className="flex flex-col sm:flex-row gap-5">
-            <div className="card shadow text-white bg-blue-500 flex-1">
-              <h1 className="font-semibold sm:text-4xl text-center mb-3">
-                {data.numberOfUsers}
-              </h1>
-              <p className="text-center sm:text-lg font-semibold">Users</p>
-            </div>
-            <div className="card shadow text-white bg-indigo-500 flex-1">
-              <h1 className="font-semibold sm:text-4xl mb-3 text-center">
-                {data.numberOfCourses}
-              </h1>
-              <p className="text-center sm:text-lg font-semibold">Courses</p>
-            </div>
-            <div className="card shadow text-white bg-green-500 flex-1">
-              <h1 className="font-semibold sm:text-4xl mb-3 text-center">
-                {data.numberOfContents}
-              </h1>
-              <p className="text-center sm:text-lg font-semibold">Contents</p>
-            </div>
-          </div>
-        ) : null}
+      <div className="mt-5 space-y-6">
+        {/* Role-based dashboard content */}
+        {renderDashboardContent()}
 
-        <UpdateProfile />
+        {/* Recent courses for all roles */}
+        <RecentCourses />
       </div>
     </Layout>
   );

@@ -30,4 +30,7 @@ export class User extends BaseEntity {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  dateCreated: Date;
 }

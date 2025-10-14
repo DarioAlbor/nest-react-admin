@@ -1,4 +1,4 @@
-import { BookOpen, Home, LogOut, Users } from 'react-feather';
+import { BookOpen, Home, LogOut, Settings, Users } from 'react-feather';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -52,6 +52,9 @@ export default function Sidebar({ className }: SidebarProps) {
             <Users className="text-white" /> Users
           </SidebarItem>
         ) : null}
+        <SidebarItem to="/profile">
+          <Settings className="text-white" /> Mi Perfil
+        </SidebarItem>
       </nav>
       <button
         className="bg-urbano-primary text-white hover:bg-opacity-90 rounded-lg p-3 transition-all flex gap-3 justify-center items-center font-semibold focus:outline-none shadow-md"
