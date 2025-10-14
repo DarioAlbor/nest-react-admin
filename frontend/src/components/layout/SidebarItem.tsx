@@ -16,9 +16,13 @@ export default function SidebarItem({
   return (
     <Link
       to={to}
-      className="no-underline text-black hover:bg-gray-300 rounded-md p-3 transition-colors"
+      className={`no-underline rounded-md p-3 transition-colors ${
+        active
+          ? 'bg-urbano-primary text-white'
+          : 'text-gray-700 hover:bg-urbano-white-hover hover:text-urbano-primary'
+      }`}
     >
-      <span className="flex gap-5 font-semibold">
+      <span className="flex gap-5 font-semibold items-center">
         {children} {active ? <ChevronRight /> : null}
       </span>
     </Link>

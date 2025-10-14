@@ -30,26 +30,30 @@ export default function Login() {
   };
 
   return (
-    <div className="h-full flex justify-center items-center">
-      <div className="card shadow">
-        <h1 className="mb-3 text-center font-semibold text-4xl">Login</h1>
-        <hr />
+    <div className="h-full flex justify-center items-center bg-urbano-background">
+      <div className="card shadow-lg border-t-4 border-urbano-primary">
+        <div className="flex flex-col items-center mb-4">
+          <h1 className="text-urbano-primary font-bold text-3xl">URBANO</h1>
+          <p className="text-gray-600 text-sm">CRM System</p>
+        </div>
+        <h2 className="mb-3 text-center font-semibold text-2xl text-gray-700">Iniciar Sesión</h2>
+        <hr className="border-urbano-header" />
         <form
           className="flex flex-col gap-5 mt-8 w-64"
           onSubmit={handleSubmit(onSubmit)}
         >
           <input
             type="text"
-            className="input sm:text-lg"
-            placeholder="Username"
+            className="input sm:text-lg focus:border-urbano-primary focus:ring-urbano-primary"
+            placeholder="Usuario"
             required
             disabled={isSubmitting}
             {...register('username')}
           />
           <input
             type="password"
-            className="input sm:text-lg"
-            placeholder="Password"
+            className="input sm:text-lg focus:border-urbano-primary focus:ring-urbano-primary"
+            placeholder="Contraseña"
             required
             disabled={isSubmitting}
             {...register('password')}
@@ -62,11 +66,11 @@ export default function Login() {
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
             ) : (
-              'Login'
+              'Ingresar'
             )}
           </button>
           {error ? (
-            <div className="text-red-500 p-3 font-semibold border rounded-md bg-red-50">
+            <div className="text-urbano-primary p-3 font-semibold border border-urbano-primary rounded-md bg-red-50">
               {error}
             </div>
           ) : null}

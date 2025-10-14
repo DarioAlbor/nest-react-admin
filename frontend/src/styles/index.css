@@ -7,6 +7,7 @@
   body,
   #root {
     @apply h-full;
+    font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Nunito Sans', sans-serif;
   }
   h1 {
     @apply text-2xl;
@@ -18,18 +19,18 @@
     @apply text-lg;
   }
   a {
-    @apply text-blue-600 underline;
+    @apply text-urbano-primary underline;
   }
 }
 
 @layer components {
   .btn {
-    @apply p-3 bg-blue-500 rounded-md focus:outline-none text-white;
-    @apply hover:bg-blue-700 transition-all;
+    @apply p-3 bg-urbano-primary rounded-md focus:outline-none text-white;
+    @apply hover:bg-opacity-90 transition-all;
     @apply focus:ring disabled:opacity-50;
   }
   .btn.danger {
-    @apply bg-red-500 hover:bg-red-700;
+    @apply bg-urbano-primary hover:bg-opacity-80;
   }
   .input {
     @apply rounded-md border-gray-300 transition-colors disabled:opacity-50;
@@ -44,7 +45,7 @@
     @apply flex flex-col lg:flex-row gap-5 rounded-lg p-3 shadow overflow-x-auto border;
   }
   .sidebar {
-    @apply fixed h-full w-72 p-5 shadow flex flex-col transform -translate-x-72 bg-white lg:translate-x-0 transition-transform;
+    @apply fixed h-full w-72 p-5 shadow flex flex-col transform -translate-x-72 bg-urbano-header lg:translate-x-0 transition-transform relative;
   }
   .sidebar.show {
     @apply translate-x-0 !important;

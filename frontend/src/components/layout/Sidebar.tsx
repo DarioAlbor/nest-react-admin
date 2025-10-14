@@ -23,9 +23,14 @@ export default function Sidebar({ className }: SidebarProps) {
 
   return (
     <div className={'sidebar ' + className}>
-      <Link to="/" className="no-underline text-black">
-        <h1 className="font-semibold text-center">Carna Project</h1>
-      </Link>
+      <div className="flex flex-col items-center mb-6">
+        <div className="w-40 h-20 mb-3 flex items-center justify-center">
+          <img src="/assets/urbano-logo.png" alt="Urbano" className="w-full h-full object-contain" />
+        </div>
+        <Link to="/" className="no-underline">
+          <h2 className="font-semibold text-center text-gray-700">CRM System</h2>
+        </Link>
+      </div>
       <nav className="mt-5 flex flex-col gap-3 flex-grow">
         <SidebarItem to="/">
           <Home /> Dashboard
@@ -40,7 +45,7 @@ export default function Sidebar({ className }: SidebarProps) {
         ) : null}
       </nav>
       <button
-        className="text-red-500 rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none"
+        className="text-urbano-primary hover:bg-urbano-white-hover rounded-md p-3 transition-colors flex gap-3 justify-center items-center font-semibold focus:outline-none border border-urbano-primary"
         onClick={handleLogout}
       >
         <LogOut /> Logout
