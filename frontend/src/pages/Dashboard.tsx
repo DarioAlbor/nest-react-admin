@@ -4,9 +4,11 @@ import RecentCourses from '../components/dashboard/RecentCourses';
 import UserDashboard from '../components/dashboard/UserDashboard';
 import Layout from '../components/layout';
 import useAuth from '../hooks/useAuth';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function Dashboard() {
   const { authenticatedUser } = useAuth();
+  const { t } = useTranslation();
 
   const renderDashboardContent = () => {
     switch (authenticatedUser.role) {
@@ -21,7 +23,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <h1 className="font-semibold text-3xl mb-5">Dashboard</h1>
+      <h1 className="font-semibold text-3xl mb-5">{t('dashboard.title')}</h1>
       <hr />
       <div className="mt-5 space-y-6">
         {/* Role-based dashboard content */}

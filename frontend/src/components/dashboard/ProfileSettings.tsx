@@ -4,10 +4,12 @@ import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
 import useAuth from '../../hooks/useAuth';
+import { useTranslation } from '../../hooks/useTranslation';
 import UpdateUserRequest from '../../models/user/UpdateUserRequest';
 import userService from '../../services/UserService';
 
 export default function ProfileSettings() {
+  const { t } = useTranslation();
   const { authenticatedUser } = useAuth();
   const [error, setError] = useState<string>();
   const [success, setSuccess] = useState<string>();
@@ -32,7 +34,7 @@ export default function ProfileSettings() {
       }
       await userService.update(authenticatedUser.id, updateUserRequest);
       setError(null);
-      setSuccess('Perfil actualizado correctamente');
+      setSuccess(t('profile.updateSuccess'));
       setValue('password', '');
       reset();
       refetch();
@@ -62,9 +64,11 @@ export default function ProfileSettings() {
           <User className="text-white" size={24} />
         </div>
         <div>
-          <h2 className="font-semibold text-xl">Configuración de Perfil</h2>
+          <h2 className="font-semibold text-xl">
+            {t('profile.settings.title')}
+          </h2>
           <p className="text-gray-600 text-sm">
-            Gestiona tus datos personales y credenciales
+            {t('profile.settings.description')}
           </p>
         </div>
       </div>
@@ -74,32 +78,32 @@ export default function ProfileSettings() {
         <div className="border-b pb-6">
           <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
             <User size={20} />
-            Información Personal
+            {t('profile.sections.personalInfo')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Nombre
+                {t('users.firstName')}
               </label>
               <input
                 type="text"
                 className="input w-full"
                 defaultValue={data.firstName}
                 disabled={isSubmitting}
-                placeholder="Nombre"
+                placeholder={t('users.firstName')}
                 {...register('firstName')}
               />
             </div>
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Apellido
+                {t('users.lastName')}
               </label>
               <input
                 type="text"
                 className="input w-full"
                 defaultValue={data.lastName}
                 disabled={isSubmitting}
-                placeholder="Apellido"
+                placeholder={t('users.lastName')}
                 {...register('lastName')}
               />
             </div>
@@ -110,36 +114,35 @@ export default function ProfileSettings() {
         <div className="border-b pb-6">
           <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
             <Lock size={20} />
-            Credenciales
+            {t('profile.sections.credentials')}
           </h3>
           <div className="space-y-4">
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Nombre de Usuario
+                {t('users.username')}
               </label>
               <input
                 type="text"
                 className="input w-full"
                 defaultValue={data.username}
                 disabled={isSubmitting}
-                placeholder="Nombre de usuario"
+                placeholder={t('users.username')}
                 {...register('username')}
               />
             </div>
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Nueva Contraseña
+                {t('profile.fields.newPassword')}
               </label>
               <input
                 type="password"
                 className="input w-full"
-                placeholder="Dejar vacío para mantener la actual"
+                placeholder={t('profile.fields.passwordPlaceholder')}
                 disabled={isSubmitting}
                 {...register('password')}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Mínimo 6 caracteres. Dejar vacío para mantener la contraseña
-                actual.
+                {t('profile.fields.passwordHelp')}
               </p>
             </div>
           </div>
@@ -149,27 +152,35 @@ export default function ProfileSettings() {
         <div>
           <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
             <Mail size={20} />
-            Información de Cuenta
+            {t('profile.sections.accountInfo')}
           </h3>
           <div className="bg-gray-50 rounded-lg p-4 space-y-2">
             <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Rol:</span>
+              <span className="font-medium text-gray-700">
+                {t('users.role')}:
+              </span>
               <span className="text-gray-600 capitalize">{data.role}</span>
             </div>
             <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Estado:</span>
+              <span className="font-medium text-gray-700">
+                {t('users.status')}:
+              </span>
               <span
                 className={`font-medium ${
                   data.isActive ? 'text-green-600' : 'text-red-600'
                 }`}
               >
-                {data.isActive ? 'Activo' : 'Inactivo'}
+                {data.isActive
+                  ? t('users.statuses.active')
+                  : t('users.statuses.inactive')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="font-medium text-gray-700">Miembro desde:</span>
+              <span className="font-medium text-gray-700">
+                {t('profile.fields.memberSince')}:
+              </span>
               <span className="text-gray-600">
-                {new Date(data.dateCreated).toLocaleDateString('es-ES')}
+                {new Date(data.dateCreated).toLocaleDateString()}
               </span>
             </div>
           </div>
@@ -181,7 +192,7 @@ export default function ProfileSettings() {
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
             ) : (
-              'Actualizar Perfil'
+              t('profile.updateButton')
             )}
           </button>
         </div>

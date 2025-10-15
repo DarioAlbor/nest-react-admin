@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'react-feather';
 
+import { useTranslation } from '../../hooks/useTranslation';
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -15,6 +17,7 @@ export default function Pagination({
   hasNext,
   hasPrev,
 }: PaginationProps) {
+  const { t } = useTranslation();
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 5;
@@ -72,7 +75,7 @@ export default function Pagination({
       </div>
 
       <div className="text-sm text-gray-600">
-        Página {currentPage} de {totalPages}
+        {t('pagination.page')} {currentPage} {t('pagination.of')} {totalPages}
       </div>
     </div>
   );

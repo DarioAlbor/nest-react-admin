@@ -1,0 +1,218 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "refresh": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "profile": {
+    "settings": {
+      "title": "Configuración de Perfil",
+      "description": "Gestiona tus datos personales y credenciales"
+    },
+    "sections": {
+      "personalInfo": "Información Personal",
+      "credentials": "Credenciales",
+      "accountInfo": "Información de Cuenta"
+    },
+    "fields": {
+      "newPassword": "Nueva Contraseña",
+      "passwordPlaceholder": "Dejar vacío para mantener la actual",
+      "passwordHelp": "Mínimo 6 caracteres. Dejar vacío para mantener la contraseña actual.",
+      "memberSince": "Miembro desde"
+    },
+    "updateButton": "Actualizar Perfil",
+    "updateSuccess": "Perfil actualizado correctamente"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "courses": "Cursos",
+    "users": "Usuarios",
+    "profile": "Mi Perfil",
+    "logout": "Cerrar Sesión"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "loginButton": "Ingresar",
+    "loginError": "Error al iniciar sesión",
+    "welcome": "Bienvenido"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "¡Bienvenido!",
+    "welcomeMessage": "Explora los cursos disponibles y mantente actualizado con el contenido más reciente.",
+    "statistics": {
+      "users": "Usuarios",
+      "courses": "Cursos",
+      "contents": "Contenidos"
+    },
+    "recentCourses": {
+      "title": "Últimos Cursos",
+      "viewAll": "Ver todos",
+      "noCourses": "No hay cursos disponibles",
+      "created": "Creado"
+    },
+    "quickActions": {
+      "title": "Acciones Rápidas",
+      "manageUsers": "Gestionar Usuarios",
+      "manageUsersDesc": "Administrar usuarios del sistema",
+      "manageCourses": "Gestionar Cursos",
+      "manageCoursesDesc": "Crear y editar cursos",
+      "exploreCourses": "Explorar Cursos",
+      "exploreCoursesDesc": "Ver todos los cursos disponibles",
+      "myProfile": "Mi Perfil",
+      "myProfileDesc": "Configurar perfil personal"
+    },
+    "editor": {
+      "manageContent": "Gestionar Contenido",
+      "createMaterial": "Crear Material",
+      "createEditCourses": "Crear y editar cursos"
+    },
+    "user": {
+      "availableActions": "Acciones Disponibles"
+    }
+  },
+  "courses": {
+    "title": "Gestionar Cursos",
+    "addCourse": "Agregar Curso",
+    "name": "Nombre",
+    "description": "Descripción",
+    "created": "Creado",
+    "actions": "Acciones",
+    "empty": "Sin cursos",
+    "viewContents": "Ver Contenidos",
+    "addCourseModal": {
+      "title": "Agregar Curso",
+      "namePlaceholder": "Nombre del curso",
+      "descriptionPlaceholder": "Descripción del curso"
+    },
+    "editCourseModal": {
+      "title": "Editar Curso"
+    },
+    "deleteCourseModal": {
+      "title": "Eliminar Curso",
+      "message": "¿Estás seguro de que quieres eliminar este curso? Todos los datos del curso serán eliminados permanentemente.",
+      "warning": "Esta acción no se puede deshacer."
+    }
+  },
+  "contents": {
+    "title": "Contenidos",
+    "addContent": "Agregar Contenido",
+    "name": "Nombre",
+    "description": "Descripción",
+    "image": "Imagen",
+    "created": "Creado",
+    "actions": "Acciones",
+    "empty": "Sin contenidos",
+    "viewCourse": "Ver Curso",
+    "addContentModal": {
+      "title": "Agregar Contenido",
+      "namePlaceholder": "Nombre del contenido",
+      "descriptionPlaceholder": "Descripción del contenido"
+    },
+    "editContentModal": {
+      "title": "Editar Contenido"
+    },
+    "deleteContentModal": {
+      "title": "Eliminar Contenido",
+      "message": "¿Estás seguro de que quieres eliminar este contenido? Todos los datos del contenido serán eliminados permanentemente.",
+      "warning": "Esta acción no se puede deshacer."
+    },
+    "imageUpload": {
+      "title": "Imagen",
+      "uploadText": "Haz clic para subir una imagen",
+      "uploadSubtext": "JPEG, PNG, WebP (máx. 5MB)",
+      "uploading": "Subiendo imagen...",
+      "uploaded": "Imagen cargada correctamente",
+      "noImage": "Sin imagen"
+    }
+  },
+  "users": {
+    "title": "Gestionar Usuarios",
+    "addUser": "Agregar Usuario",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "username": "Usuario",
+    "role": "Rol",
+    "status": "Estado",
+    "created": "Creado",
+    "actions": "Acciones",
+    "empty": "Sin usuarios",
+    "editUser": "Editar Usuario",
+    "deleteUser": "Eliminar Usuario",
+    "roles": {
+      "admin": "Administrador",
+      "editor": "Editor",
+      "user": "Usuario"
+    },
+    "statuses": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "addUserModal": {
+      "title": "Agregar Usuario",
+      "firstNamePlaceholder": "Nombre",
+      "lastNamePlaceholder": "Apellido",
+      "usernamePlaceholder": "Usuario",
+      "passwordPlaceholder": "Contraseña (mín. 6 caracteres)"
+    },
+    "editUserModal": {
+      "title": "Editar Usuario"
+    },
+    "deleteUserModal": {
+      "title": "Eliminar Usuario",
+      "message": "¿Estás seguro de que quieres eliminar este usuario? Todos los datos del usuario serán eliminados permanentemente.",
+      "warning": "Esta acción no se puede deshacer."
+    }
+  },
+  "pagination": {
+    "page": "Página",
+    "of": "de",
+    "showing": "Mostrando",
+    "items": "elementos",
+    "previous": "Anterior",
+    "next": "Siguiente"
+  },
+  "sorting": {
+    "sortBy": "Ordenar por",
+    "ascending": "Ascendente",
+    "descending": "Descendente"
+  },
+  "filters": {
+    "all": "Todos",
+    "clear": "Limpiar filtros"
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error",
+    "network": "Error de conexión",
+    "unauthorized": "No autorizado",
+    "forbidden": "Acceso denegado",
+    "notFound": "No encontrado",
+    "validation": "Error de validación",
+    "fileUpload": "Error al subir archivo",
+    "fileTooLarge": "Archivo demasiado grande",
+    "invalidFileType": "Tipo de archivo inválido"
+  },
+  "language": {
+    "select": "Seleccionar idioma",
+    "spanish": "Español",
+    "english": "English"
+  }
+}
+

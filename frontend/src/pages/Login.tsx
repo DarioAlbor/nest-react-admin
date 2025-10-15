@@ -3,13 +3,16 @@ import { Loader } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 
+import LanguageSelector from '../components/shared/LanguageSelector';
 import useAuth from '../hooks/useAuth';
+import { useTranslation } from '../hooks/useTranslation';
 import LoginRequest from '../models/auth/LoginRequest';
 import authService from '../services/AuthService';
 
 export default function Login() {
   const { setAuthenticatedUser } = useAuth();
   const history = useHistory();
+  const { t } = useTranslation();
 
   const [error, setError] = useState<string>();
 
@@ -32,12 +35,15 @@ export default function Login() {
   return (
     <div className="h-full flex justify-center items-center bg-urbano-background">
       <div className="card shadow-lg border-t-4 border-urbano-primary">
+        <div className="flex justify-end mb-4">
+          <LanguageSelector variant="light" />
+        </div>
         <div className="flex flex-col items-center mb-4">
           <h1 className="text-urbano-primary font-bold text-3xl">URBANO</h1>
           <p className="text-gray-600 text-sm">CRM System</p>
         </div>
         <h2 className="mb-3 text-center font-semibold text-2xl text-gray-700">
-          Iniciar Sesión
+          {t('auth.login')}
         </h2>
         <hr className="border-urbano-header" />
         <form
@@ -47,7 +53,7 @@ export default function Login() {
           <input
             type="text"
             className="input sm:text-lg focus:border-urbano-primary focus:ring-urbano-primary"
-            placeholder="Usuario"
+            placeholder={t('auth.username')}
             required
             disabled={isSubmitting}
             {...register('username')}
@@ -55,7 +61,7 @@ export default function Login() {
           <input
             type="password"
             className="input sm:text-lg focus:border-urbano-primary focus:ring-urbano-primary"
-            placeholder="Contraseña"
+            placeholder={t('auth.password')}
             required
             disabled={isSubmitting}
             {...register('password')}
@@ -68,7 +74,7 @@ export default function Login() {
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
             ) : (
-              'Ingresar'
+              t('auth.loginButton')
             )}
           </button>
           {error ? (

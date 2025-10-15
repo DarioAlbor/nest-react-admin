@@ -11,6 +11,7 @@ import Pagination from '../components/shared/Pagination';
 import SortControls from '../components/shared/SortControls';
 import useAuth from '../hooks/useAuth';
 import useDebounce from '../hooks/useDebounce';
+import { useTranslation } from '../hooks/useTranslation';
 import CreateCourseRequest from '../models/course/CreateCourseRequest';
 import courseService from '../services/CourseService';
 
@@ -27,6 +28,7 @@ export default function Courses() {
 
   const { authenticatedUser } = useAuth();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   // debounce filter values to avoid excessive api calls
   const debouncedName = useDebounce(name, 500);
@@ -104,7 +106,7 @@ export default function Courses() {
 
   return (
     <Layout>
-      <h1 className="font-semibold text-3xl mb-5">Manage Courses</h1>
+      <h1 className="font-semibold text-3xl mb-5">{t('courses.title')}</h1>
       <hr />
       <div className="flex gap-3 my-5">
         {authenticatedUser.role !== 'user' ? (
@@ -112,14 +114,14 @@ export default function Courses() {
             className="btn flex gap-2 w-full sm:w-auto justify-center"
             onClick={() => setAddCourseShow(true)}
           >
-            <Plus /> Add Course
+            <Plus /> {t('courses.addCourse')}
           </button>
         ) : null}
         <button
           className="btn flex gap-2 w-full sm:w-auto justify-center"
           onClick={handleRefresh}
         >
-          <RefreshCw /> Refresh
+          <RefreshCw /> {t('common.refresh')}
         </button>
       </div>
 
@@ -128,14 +130,14 @@ export default function Courses() {
           <input
             type="text"
             className="input w-1/2"
-            placeholder="Name"
+            placeholder={t('courses.name')}
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <input
             type="text"
             className="input w-1/2"
-            placeholder="Description"
+            placeholder={t('courses.description')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -148,9 +150,9 @@ export default function Courses() {
           sortOrder={sortOrder}
           onSortChange={handleSortChange}
           options={[
-            { value: 'name', label: 'Nombre' },
-            { value: 'description', label: 'Descripción' },
-            { value: 'dateCreated', label: 'Fecha de Creación' },
+            { value: 'name', label: t('courses.name') },
+            { value: 'description', label: t('courses.description') },
+            { value: 'dateCreated', label: t('courses.created') },
           ]}
         />
         <PageSizeControls
@@ -175,7 +177,9 @@ export default function Courses() {
       {/* Add User Modal */}
       <Modal show={addCourseShow}>
         <div className="flex">
-          <h1 className="font-semibold mb-3">Add Course</h1>
+          <h1 className="font-semibold mb-3">
+            {t('courses.addCourseModal.title')}
+          </h1>
           <button
             className="ml-auto focus:outline-none"
             onClick={() => {
@@ -195,7 +199,7 @@ export default function Courses() {
           <input
             type="text"
             className="input"
-            placeholder="Name"
+            placeholder={t('courses.addCourseModal.namePlaceholder')}
             disabled={isSubmitting}
             required
             {...register('name')}
@@ -203,7 +207,7 @@ export default function Courses() {
           <input
             type="text"
             className="input"
-            placeholder="Description"
+            placeholder={t('courses.addCourseModal.descriptionPlaceholder')}
             disabled={isSubmitting}
             required
             {...register('description')}
@@ -212,7 +216,7 @@ export default function Courses() {
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
             ) : (
-              'Save'
+              t('common.save')
             )}
           </button>
           {error ? (

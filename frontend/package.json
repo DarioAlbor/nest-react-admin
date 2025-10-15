@@ -13,10 +13,13 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "axios": "^0.21.1",
+    "i18next": "21.9.2",
+    "i18next-browser-languagedetector": "6.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
     "react-hook-form": "^7.3.5",
+    "react-i18next": "11.18.5",
     "react-query": "^3.15.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
@@ -41,7 +44,12 @@
     "rules": {
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
-      "prettier/prettier": ["error", { "endOfLine": "auto" }],
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ],
       "react-hooks/exhaustive-deps": "off"
     }
   },

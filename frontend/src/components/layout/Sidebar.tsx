@@ -3,7 +3,9 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
+import { useTranslation } from '../../hooks/useTranslation';
 import authService from '../../services/AuthService';
+import LanguageSelector from '../shared/LanguageSelector';
 import SidebarItem from './SidebarItem';
 
 interface SidebarProps {
@@ -12,6 +14,7 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const history = useHistory();
+  const { t } = useTranslation();
 
   const { authenticatedUser, setAuthenticatedUser } = useAuth();
 
@@ -42,25 +45,29 @@ export default function Sidebar({ className }: SidebarProps) {
       </div>
       <nav className="mt-5 flex flex-col gap-3 flex-grow">
         <SidebarItem to="/">
-          <Home className="text-white" /> Dashboard
+          <Home className="text-white" /> {t('navigation.dashboard')}
         </SidebarItem>
         <SidebarItem to="/courses">
-          <BookOpen className="text-white" /> Courses
+          <BookOpen className="text-white" /> {t('navigation.courses')}
         </SidebarItem>
         {authenticatedUser.role === 'admin' ? (
           <SidebarItem to="/users">
-            <Users className="text-white" /> Users
+            <Users className="text-white" /> {t('navigation.users')}
           </SidebarItem>
         ) : null}
         <SidebarItem to="/profile">
-          <Settings className="text-white" /> Mi Perfil
+          <Settings className="text-white" /> {t('navigation.profile')}
         </SidebarItem>
       </nav>
+
+      <div className="mb-4">
+        <LanguageSelector />
+      </div>
       <button
         className="bg-urbano-primary text-white hover:bg-opacity-90 rounded-lg p-3 transition-all flex gap-3 justify-center items-center font-semibold focus:outline-none shadow-md"
         onClick={handleLogout}
       >
-        <LogOut className="text-white" /> Logout
+        <LogOut className="text-white" /> {t('navigation.logout')}
       </button>
     </div>
   );

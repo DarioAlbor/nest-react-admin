@@ -1,5 +1,7 @@
 import { ArrowDown, ArrowUp } from 'react-feather';
 
+import { useTranslation } from '../../hooks/useTranslation';
+
 interface SortOption {
   value: string;
   label: string;
@@ -18,6 +20,7 @@ export default function SortControls({
   onSortChange,
   options,
 }: SortControlsProps) {
+  const { t } = useTranslation();
   const handleSortChange = (newSortBy: string) => {
     if (newSortBy === sortBy) {
       // toggle order if same field
@@ -30,7 +33,9 @@ export default function SortControls({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-gray-700">Ordenar por:</span>
+      <span className="text-sm font-medium text-gray-700">
+        {t('sorting.sortBy')}:
+      </span>
       <select
         value={sortBy}
         onChange={(e) => handleSortChange(e.target.value)}
@@ -51,7 +56,9 @@ export default function SortControls({
             ? 'bg-urbano-primary text-white border-urbano-primary'
             : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
         }`}
-        title={`Ordenar ${sortOrder === 'ASC' ? 'descendente' : 'ascendente'}`}
+        title={`${t('sorting.sortBy')} ${
+          sortOrder === 'ASC' ? t('sorting.descending') : t('sorting.ascending')
+        }`}
       >
         {sortOrder === 'ASC' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
       </button>

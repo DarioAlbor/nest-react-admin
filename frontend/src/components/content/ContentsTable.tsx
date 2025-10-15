@@ -3,6 +3,7 @@ import { AlertTriangle, Loader, X } from 'react-feather';
 import { useForm } from 'react-hook-form';
 
 import useAuth from '../../hooks/useAuth';
+import { useTranslation } from '../../hooks/useTranslation';
 import Content from '../../models/content/Content';
 import UpdateContentRequest from '../../models/content/UpdateContentRequest';
 import contentService from '../../services/ContentService';
@@ -23,6 +24,7 @@ export default function ContentsTable({
   isLoading,
   courseId,
 }: ContentsTableProps) {
+  const { t } = useTranslation();
   const { authenticatedUser } = useAuth();
   const [deleteShow, setDeleteShow] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -69,7 +71,14 @@ export default function ContentsTable({
   return (
     <>
       <div className="table-container">
-        <Table columns={['Image', 'Name', 'Description', 'Created']}>
+        <Table
+          columns={[
+            t('contents.image'),
+            t('contents.name'),
+            t('contents.description'),
+            t('contents.created'),
+          ]}
+        >
           {isLoading
             ? null
             : data.map(({ id, name, description, dateCreated, imageUrl }) => (
@@ -83,7 +92,9 @@ export default function ContentsTable({
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-200 rounded border flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">No image</span>
+                        <span className="text-gray-400 text-xs">
+                          {t('contents.noImage')}
+                        </span>
                       </div>
                     )}
                   </TableItem>
@@ -106,7 +117,7 @@ export default function ContentsTable({
                           setUpdateShow(true);
                         }}
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                     ) : null}
                     {authenticatedUser.role === 'admin' ? (
@@ -117,7 +128,7 @@ export default function ContentsTable({
                           setDeleteShow(true);
                         }}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     ) : null}
                   </TableItem>
@@ -126,7 +137,7 @@ export default function ContentsTable({
         </Table>
         {!isLoading && data.length < 1 ? (
           <div className="text-center my-5 text-gray-500">
-            <h1>Empty</h1>
+            <h1>{t('contents.empty')}</h1>
           </div>
         ) : null}
       </div>
@@ -135,13 +146,14 @@ export default function ContentsTable({
       <Modal show={deleteShow}>
         <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
-          <h3 className="mb-2 font-semibold">Delete Content</h3>
+          <h3 className="mb-2 font-semibold">
+            {t('contents.deleteContentModal.title')}
+          </h3>
           <hr />
           <p className="mt-2">
-            Are you sure you want to delete the content? All of content's data
-            will be permanently removed.
+            {t('contents.deleteContentModal.message')}
             <br />
-            This action cannot be undone.
+            {t('contents.deleteContentModal.warning')}
           </p>
         </div>
         <div className="flex flex-row gap-3 justify-end mt-5">
@@ -153,7 +165,7 @@ export default function ContentsTable({
             }}
             disabled={isDeleting}
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             className="btn danger"
@@ -163,7 +175,7 @@ export default function ContentsTable({
             {isDeleting ? (
               <Loader className="mx-auto animate-spin" />
             ) : (
-              'Delete'
+              t('common.delete')
             )}
           </button>
         </div>
@@ -178,7 +190,9 @@ export default function ContentsTable({
       {selectedContentId ? (
         <Modal show={updateShow}>
           <div className="flex">
-            <h1 className="font-semibold mb-3">Update Content</h1>
+            <h1 className="font-semibold mb-3">
+              {t('contents.editContentModal.title')}
+            </h1>
             <button
               className="ml-auto focus:outline-none"
               onClick={() => {
@@ -199,14 +213,14 @@ export default function ContentsTable({
             <input
               type="text"
               className="input"
-              placeholder="Name"
+              placeholder={t('contents.name')}
               required
               {...register('name')}
             />
             <input
               type="text"
               className="input"
-              placeholder="Description"
+              placeholder={t('contents.description')}
               required
               disabled={isSubmitting}
               {...register('description')}
@@ -220,7 +234,7 @@ export default function ContentsTable({
               {isSubmitting ? (
                 <Loader className="animate-spin mx-auto" />
               ) : (
-                'Save'
+                t('common.save')
               )}
             </button>
             {error ? (

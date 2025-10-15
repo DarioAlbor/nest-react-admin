@@ -1,10 +1,12 @@
 import { BookOpen, FileText, TrendingUp, Users } from 'react-feather';
 import { useQuery } from 'react-query';
 
+import { useTranslation } from '../../hooks/useTranslation';
 import statsService from '../../services/StatsService';
 
 export default function AdminDashboard() {
   const { data, isLoading } = useQuery('stats', statsService.getStats);
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (
@@ -26,7 +28,9 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-bold text-3xl mb-2">{data.numberOfUsers}</h1>
-              <p className="text-blue-100 font-semibold">Usuarios</p>
+              <p className="text-blue-100 font-semibold">
+                {t('dashboard.statistics.users')}
+              </p>
             </div>
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
               <Users size={32} />
@@ -40,7 +44,9 @@ export default function AdminDashboard() {
               <h1 className="font-bold text-3xl mb-2">
                 {data.numberOfCourses}
               </h1>
-              <p className="text-indigo-100 font-semibold">Cursos</p>
+              <p className="text-indigo-100 font-semibold">
+                {t('dashboard.statistics.courses')}
+              </p>
             </div>
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
               <BookOpen size={32} />
@@ -54,7 +60,9 @@ export default function AdminDashboard() {
               <h1 className="font-bold text-3xl mb-2">
                 {data.numberOfContents}
               </h1>
-              <p className="text-green-100 font-semibold">Contenidos</p>
+              <p className="text-green-100 font-semibold">
+                {t('dashboard.statistics.contents')}
+              </p>
             </div>
             <div className="p-3 bg-white bg-opacity-20 rounded-full">
               <FileText size={32} />
@@ -67,7 +75,7 @@ export default function AdminDashboard() {
       <div className="card shadow">
         <h2 className="font-semibold text-xl mb-4 flex items-center gap-2">
           <TrendingUp size={24} />
-          Acciones Rápidas
+          {t('dashboard.quickActions.title')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <a
@@ -75,9 +83,11 @@ export default function AdminDashboard() {
             className="p-4 border rounded-lg hover:shadow-md transition-shadow text-center"
           >
             <Users className="mx-auto mb-2 text-blue-500" size={32} />
-            <h3 className="font-semibold">Gestionar Usuarios</h3>
+            <h3 className="font-semibold">
+              {t('dashboard.quickActions.manageUsers')}
+            </h3>
             <p className="text-sm text-gray-600">
-              Administrar usuarios del sistema
+              {t('dashboard.quickActions.manageUsersDesc')}
             </p>
           </a>
           <a
@@ -85,16 +95,24 @@ export default function AdminDashboard() {
             className="p-4 border rounded-lg hover:shadow-md transition-shadow text-center"
           >
             <BookOpen className="mx-auto mb-2 text-indigo-500" size={32} />
-            <h3 className="font-semibold">Gestionar Cursos</h3>
-            <p className="text-sm text-gray-600">Crear y editar cursos</p>
+            <h3 className="font-semibold">
+              {t('dashboard.quickActions.manageCourses')}
+            </h3>
+            <p className="text-sm text-gray-600">
+              {t('dashboard.quickActions.manageCoursesDesc')}
+            </p>
           </a>
           <a
             href="/profile"
             className="p-4 border rounded-lg hover:shadow-md transition-shadow text-center"
           >
             <FileText className="mx-auto mb-2 text-green-500" size={32} />
-            <h3 className="font-semibold">Mi Perfil</h3>
-            <p className="text-sm text-gray-600">Configurar perfil personal</p>
+            <h3 className="font-semibold">
+              {t('dashboard.quickActions.myProfile')}
+            </h3>
+            <p className="text-sm text-gray-600">
+              {t('dashboard.quickActions.myProfileDesc')}
+            </p>
           </a>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 import useAuth from '../../hooks/useAuth';
+import { useTranslation } from '../../hooks/useTranslation';
 import Course from '../../models/course/Course';
 import UpdateCourseRequest from '../../models/course/UpdateCourseRequest';
 import courseService from '../../services/CourseService';
@@ -17,6 +18,7 @@ interface UsersTableProps {
 }
 
 export default function CoursesTable({ data, isLoading }: UsersTableProps) {
+  const { t } = useTranslation();
   const { authenticatedUser } = useAuth();
   const [deleteShow, setDeleteShow] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -58,7 +60,13 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
   return (
     <>
       <div className="table-container">
-        <Table columns={['Name', 'Description', 'Created']}>
+        <Table
+          columns={[
+            t('courses.name'),
+            t('courses.description'),
+            t('courses.created'),
+          ]}
+        >
           {isLoading
             ? null
             : data.map(({ id, name, description, dateCreated }) => (
@@ -83,7 +91,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
                           setUpdateShow(true);
                         }}
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                     ) : null}
                     {authenticatedUser.role === 'admin' ? (
@@ -94,7 +102,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
                           setDeleteShow(true);
                         }}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     ) : null}
                   </TableItem>
@@ -103,7 +111,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
         </Table>
         {!isLoading && data.length < 1 ? (
           <div className="text-center my-5 text-gray-500">
-            <h1>Empty</h1>
+            <h1>{t('courses.empty')}</h1>
           </div>
         ) : null}
       </div>
@@ -111,13 +119,14 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
       <Modal show={deleteShow}>
         <AlertTriangle size={30} className="text-red-500 mr-5 fixed" />
         <div className="ml-10">
-          <h3 className="mb-2 font-semibold">Delete Course</h3>
+          <h3 className="mb-2 font-semibold">
+            {t('courses.deleteCourseModal.title')}
+          </h3>
           <hr />
           <p className="mt-2">
-            Are you sure you want to delete the course? All of course's data
-            will be permanently removed.
+            {t('courses.deleteCourseModal.message')}
             <br />
-            This action cannot be undone.
+            {t('courses.deleteCourseModal.warning')}
           </p>
         </div>
         <div className="flex flex-row gap-3 justify-end mt-5">
@@ -129,7 +138,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
             }}
             disabled={isDeleting}
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             className="btn danger"
@@ -139,7 +148,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
             {isDeleting ? (
               <Loader className="mx-auto animate-spin" />
             ) : (
-              'Delete'
+              t('common.delete')
             )}
           </button>
         </div>
@@ -152,7 +161,9 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
       {/* Update Course Modal */}
       <Modal show={updateShow}>
         <div className="flex">
-          <h1 className="font-semibold mb-3">Update Course</h1>
+          <h1 className="font-semibold mb-3">
+            {t('courses.editCourseModal.title')}
+          </h1>
           <button
             className="ml-auto focus:outline-none"
             onClick={() => {
@@ -173,14 +184,14 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
           <input
             type="text"
             className="input"
-            placeholder="Name"
+            placeholder={t('courses.name')}
             required
             {...register('name')}
           />
           <input
             type="text"
             className="input"
-            placeholder="Description"
+            placeholder={t('courses.description')}
             required
             disabled={isSubmitting}
             {...register('description')}
@@ -189,7 +200,7 @@ export default function CoursesTable({ data, isLoading }: UsersTableProps) {
             {isSubmitting ? (
               <Loader className="animate-spin mx-auto" />
             ) : (
-              'Save'
+              t('common.save')
             )}
           </button>
           {error ? (

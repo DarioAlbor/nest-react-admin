@@ -1,3 +1,5 @@
+import { useTranslation } from '../../hooks/useTranslation';
+
 interface PageSizeControlsProps {
   pageSize: number;
   onPageSizeChange: (size: number) => void;
@@ -9,11 +11,14 @@ export default function PageSizeControls({
   onPageSizeChange,
   total,
 }: PageSizeControlsProps) {
+  const { t } = useTranslation();
   const pageSizeOptions = [5, 10, 20, 50];
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm font-medium text-gray-700">Mostrar:</span>
+      <span className="text-sm font-medium text-gray-700">
+        {t('pagination.showing')}:
+      </span>
       <select
         value={pageSize}
         onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -25,7 +30,9 @@ export default function PageSizeControls({
           </option>
         ))}
       </select>
-      <span className="text-sm text-gray-600">de {total} elementos</span>
+      <span className="text-sm text-gray-600">
+        {t('pagination.of')} {total} {t('pagination.items')}
+      </span>
     </div>
   );
 }
