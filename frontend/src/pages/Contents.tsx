@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 
 import ContentsTable from '../components/content/ContentsTable';
 import Layout from '../components/layout';
+import ImageUpload from '../components/shared/ImageUpload';
 import Modal from '../components/shared/Modal';
 import PageSizeControls from '../components/shared/PageSizeControls';
 import Pagination from '../components/shared/Pagination';
@@ -37,6 +38,8 @@ export default function Course() {
     handleSubmit,
     formState: { isSubmitting },
     reset,
+    setValue,
+    watch,
   } = useForm<CreateContentRequest>();
 
   // debounce filter values to avoid excessive api calls
@@ -217,6 +220,11 @@ export default function Course() {
             disabled={isSubmitting}
             required
             {...register('description')}
+          />
+          <ImageUpload
+            value={watch('imageUrl')}
+            onChange={(imageUrl) => setValue('imageUrl', imageUrl)}
+            disabled={isSubmitting}
           />
           <button className="btn" disabled={isSubmitting}>
             {isSubmitting ? (

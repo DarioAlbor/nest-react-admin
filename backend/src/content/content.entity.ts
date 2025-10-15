@@ -23,6 +23,9 @@ export class Content extends BaseEntity {
   @Column()
   dateCreated: Date;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
   @Column({ select: false, nullable: false })
   courseId: string;
 

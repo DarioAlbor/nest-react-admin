@@ -6,6 +6,8 @@ import useAuth from '../../hooks/useAuth';
 import Content from '../../models/content/Content';
 import UpdateContentRequest from '../../models/content/UpdateContentRequest';
 import contentService from '../../services/ContentService';
+import fileUploadService from '../../services/FileUploadService';
+import ImageUpload from '../shared/ImageUpload';
 import Modal from '../shared/Modal';
 import Table from '../shared/Table';
 import TableItem from '../shared/TableItem';
@@ -34,6 +36,7 @@ export default function ContentsTable({
     formState: { isSubmitting },
     reset,
     setValue,
+    watch,
   } = useForm<UpdateContentRequest>();
 
   const handleDelete = async () => {
@@ -66,11 +69,24 @@ export default function ContentsTable({
   return (
     <>
       <div className="table-container">
-        <Table columns={['Name', 'Description', 'Created']}>
+        <Table columns={['Image', 'Name', 'Description', 'Created']}>
           {isLoading
             ? null
-            : data.map(({ id, name, description, dateCreated }) => (
+            : data.map(({ id, name, description, dateCreated, imageUrl }) => (
                 <tr key={id}>
+                  <TableItem>
+                    {imageUrl ? (
+                      <img
+                        src={fileUploadService.getImageUrl(imageUrl)}
+                        alt={name}
+                        className="w-16 h-16 object-cover rounded border"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 bg-gray-200 rounded border flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">No image</span>
+                      </div>
+                    )}
+                  </TableItem>
                   <TableItem>{name}</TableItem>
                   <TableItem>{description}</TableItem>
                   <TableItem>
@@ -85,6 +101,7 @@ export default function ContentsTable({
 
                           setValue('name', name);
                           setValue('description', description);
+                          setValue('imageUrl', imageUrl || '');
 
                           setUpdateShow(true);
                         }}
@@ -193,6 +210,11 @@ export default function ContentsTable({
               required
               disabled={isSubmitting}
               {...register('description')}
+            />
+            <ImageUpload
+              value={watch('imageUrl')}
+              onChange={(imageUrl) => setValue('imageUrl', imageUrl)}
+              disabled={isSubmitting}
             />
             <button className="btn" disabled={isSubmitting}>
               {isSubmitting ? (
